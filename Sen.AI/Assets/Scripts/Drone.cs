@@ -9,11 +9,6 @@ public class Drone : MonoBehaviour
     private void Awake()
     {
         droneRb = GetComponent<Rigidbody2D>();
-
-        // Debug.Log(Vector2.Dot(new Vector2(0, 1), new Vector2(0, 1)));
-        // Debug.Log(Vector2.Dot(new Vector2(0, 1), new Vector2(.5f, .5f)));
-        // Debug.Log(Vector2.Dot(new Vector2(0, 1), new Vector2(1, 0)));
-        // Debug.Log(Vector2.Dot(new Vector2(0, 1), new Vector2(0, -1)));
     }
     private void FixedUpdate()
     {
@@ -35,15 +30,15 @@ public class Drone : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision2D)
     {
-        if (!collision2D.gameObject.TryGetComponent(out LandingPad landingPad))
+        if (!collision2D.gameObject.TryGetComponent(out Platform platform))
         {
             Debug.Log("Fora da plataforma");
             return;
         }
 
-        //Debug.Log(collision2D.relativeVelocity.magnitude);
         float crashMagnitude = 3f;
-        if (collision2D.relativeVelocity.magnitude > crashMagnitude)
+        float relativeVelocityMagnitude = collision2D.relativeVelocity.magnitude;
+        if (relativeVelocityMagnitude > crashMagnitude)
         {
             Debug.Log("Quebrou ao pousar");
             return;
@@ -56,5 +51,21 @@ public class Drone : MonoBehaviour
             return;
         }
         Debug.Log("Pousou corretamente");
+
+        float maxScoreAmountLandingAngle = 100;
+        float scoreDotVectorMultiplier = 10f;
+        float landingAngleScore = maxScoreAmountLandingAngle - Mathf.Abs(dotVector - 1f) * scoreDotVectorMultiplier * maxScoreAmountLandingAngle;
+
+        float maxScoreAmountLandingSpeed = 100;
+        float landingSpeedScore = (crashMagnitude - relativeVelocityMagnitude) * maxScoreAmountLandingSpeed;
+
+        Debug.Log("landingAngleScore: " + landingAngleScore);
+        Debug.Log("landingspeedScore: " + landingSpeedScore);
+
+        int score = Mathf.RoundToInt((landingAngleScore + landingSpeedScore) * platform.GetScoreMultiplier());
+
+        Debug.Log("pontuação " + score);
+
+
     }
 }
