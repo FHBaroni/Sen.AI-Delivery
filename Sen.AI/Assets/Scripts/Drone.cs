@@ -5,35 +5,53 @@ using UnityEngine.InputSystem;
 
 public class Drone : MonoBehaviour
 {
+
+    public static Drone Instance { get; private set; }
     public event EventHandler OnUpForce;
     public event EventHandler OnRightForce;
     public event EventHandler OnLeftForce;
     public event EventHandler OnNoForce;
+    public event EventHandler OnCoinPickup;
+    public event EventHandler<OnLandedEventArgs> OnLanded;
+    public class OnLandedEventArgs : EventArgs
+    {
+        public int score;
+    }
+
+
     private Rigidbody2D droneRb;
+    private float fuelAmount = 100f;
 
     private void Awake()
     {
+        Instance = this;
         droneRb = GetComponent<Rigidbody2D>();
     }
     private void FixedUpdate()
     {
         OnNoForce?.Invoke(this, EventArgs.Empty);
+        //Debug.Log("Energy: " + fuelAmount);
+        if (fuelAmount <= 0f) return;
+
         if (Keyboard.current.upArrowKey.isPressed)
         {
             float force = 700f;
             droneRb.AddForce(force * transform.up * Time.deltaTime);
+            ConsumeFuel();
             OnUpForce?.Invoke(this, EventArgs.Empty);
         }
         if (Keyboard.current.rightArrowKey.isPressed)
         {
             float turnSpeed = -100f;
             droneRb.AddTorque(turnSpeed * Time.deltaTime);
+            ConsumeFuel();
             OnRightForce?.Invoke(this, EventArgs.Empty);
         }
         if (Keyboard.current.leftArrowKey.isPressed)
         {
             float turnSpeed = 100f;
             droneRb.AddTorque(turnSpeed * Time.deltaTime);
+            ConsumeFuel();
             OnLeftForce?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -74,7 +92,38 @@ public class Drone : MonoBehaviour
         int score = Mathf.RoundToInt((landingAngleScore + landingSpeedScore) * platform.GetScoreMultiplier());
 
         Debug.Log("pontuação " + score);
+        OnLanded?.Invoke(this, new OnLandedEventArgs { score = score });
+    }
+    private void OnTriggerEnter2D(Collider2D collision2D)
+    {
+        if (collision2D.gameObject.TryGetComponent(out EnergyPickup energyPickup))
+        {
+            float addEnergyAmount = 30f;
+            fuelAmount += addEnergyAmount;
+            energyPickup.DestroyItem();
+        }
 
-
+        if (collision2D.gameObject.TryGetComponent(out CoinPickup coinPickup))
+        {
+            OnCoinPickup?.Invoke(this, EventArgs.Empty);
+            coinPickup.DestroyItem();
+        }
+    }
+    private void ConsumeFuel()
+    {
+        float fuelConsumption = 10f;
+        fuelAmount -= fuelConsumption * Time.deltaTime;
+    }
+    public float GetFuel()
+    {
+        return fuelAmount;
+    }
+    public float GetSpeedX()
+    {
+        return droneRb.linearVelocityX;
+    }
+    public float GetSpeedY()
+    {
+        return droneRb.linearVelocityY;
     }
 }
