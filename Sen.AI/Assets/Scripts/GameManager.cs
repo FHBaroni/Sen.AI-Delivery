@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     private int score;
     private float time;
+    private bool isTimerActive;
 
     private void Awake()
     {
@@ -17,11 +19,20 @@ public class GameManager : MonoBehaviour
     {
         Drone.Instance.OnCoinPickup += Drone_OnCoinPickup;
         Drone.Instance.OnLanded += Drone_OnLanded;
+        Drone.Instance.OnStateChanged += Drone_OnStateChanged;
+    }
+
+    private void Drone_OnStateChanged(object sender, Drone.OnStateChangedEventArgs e)
+    {
+        isTimerActive = e.state == Drone.State.Playing;
     }
 
     private void Update()
     {
-        time += Time.deltaTime;
+        if (isTimerActive)
+        {
+            time += Time.deltaTime;
+        }
     }
     private void Drone_OnLanded(object sender, Drone.OnLandedEventArgs e)
     {

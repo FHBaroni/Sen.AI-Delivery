@@ -13,6 +13,13 @@ public class Drone : MonoBehaviour
     public event EventHandler OnLeftForce;
     public event EventHandler OnNoForce;
     public event EventHandler OnCoinPickup;
+
+    public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
+    public class OnStateChangedEventArgs : EventArgs
+    {
+        public State state;
+    }
+
     public event EventHandler<OnLandedEventArgs> OnLanded;
     public class OnLandedEventArgs : EventArgs
     {
@@ -21,8 +28,6 @@ public class Drone : MonoBehaviour
         public float dotVector;
         public float LandingSpeed;
         public float ScoreMultiplier;
-
-
     }
 
     public enum LandingType
@@ -33,45 +38,75 @@ public class Drone : MonoBehaviour
         TooFastLanding,
     }
 
+    public enum State
+    {
+        WaitingToStart,
+        Playing,
+        GameOver,
+    }
+
     private Rigidbody2D droneRb;
     private float fuelAmountMax = 100f;
-    private float fuelAmount = 100f;
+    private float fuelAmount;
+    private State state;
 
 
     private void Awake()
     {
         Instance = this;
+
+        fuelAmount = fuelAmountMax;
+        state = State.WaitingToStart;
+
         droneRb = GetComponent<Rigidbody2D>();
         droneRb.gravityScale = 0f;
     }
     private void FixedUpdate()
     {
         OnNoForce?.Invoke(this, EventArgs.Empty);
-        //Debug.Log("Energy: " + fuelAmount);
-        if (fuelAmount <= 0f) return;
 
-        if (Keyboard.current.upArrowKey.isPressed)
+        switch (state)
         {
-            float force = 700f;
-            droneRb.AddForce(force * transform.up * Time.deltaTime);
-            ConsumeFuel();
-            OnUpForce?.Invoke(this, EventArgs.Empty);
-        }
-        if (Keyboard.current.rightArrowKey.isPressed)
-        {
-            float turnSpeed = -100f;
-            droneRb.AddTorque(turnSpeed * Time.deltaTime);
-            ConsumeFuel();
-            OnRightForce?.Invoke(this, EventArgs.Empty);
-        }
-        if (Keyboard.current.leftArrowKey.isPressed)
-        {
-            float turnSpeed = 100f;
-            droneRb.AddTorque(turnSpeed * Time.deltaTime);
-            ConsumeFuel();
-            OnLeftForce?.Invoke(this, EventArgs.Empty);
+            case State.WaitingToStart:
+                if (Keyboard.current.upArrowKey.isPressed ||
+                    Keyboard.current.rightArrowKey.isPressed ||
+                    Keyboard.current.leftArrowKey.isPressed)
+                {
+                    droneRb.gravityScale = GRAVITY;
+                    SetState(State.Playing);
+                }
+                break;
+            case State.Playing:
+                if (fuelAmount <= 0f) return;
+
+                if (Keyboard.current.upArrowKey.isPressed)
+                {
+                    float force = 700f;
+                    droneRb.AddForce(force * transform.up * Time.deltaTime);
+                    ConsumeFuel();
+                    OnUpForce?.Invoke(this, EventArgs.Empty);
+                }
+                if (Keyboard.current.rightArrowKey.isPressed)
+                {
+                    float turnSpeed = -100f;
+                    droneRb.AddTorque(turnSpeed * Time.deltaTime);
+                    ConsumeFuel();
+                    OnRightForce?.Invoke(this, EventArgs.Empty);
+                }
+                if (Keyboard.current.leftArrowKey.isPressed)
+                {
+                    float turnSpeed = 100f;
+                    droneRb.AddTorque(turnSpeed * Time.deltaTime);
+                    ConsumeFuel();
+                    OnLeftForce?.Invoke(this, EventArgs.Empty);
+                }
+                break;
+            case State.GameOver:
+                break;
         }
     }
+
+
     private void OnCollisionEnter2D(Collision2D collision2D)
     {
         if (!collision2D.gameObject.TryGetComponent(out Platform platform))
@@ -85,6 +120,7 @@ public class Drone : MonoBehaviour
                 ScoreMultiplier = 0,
                 score = 0,
             });
+            SetState(State.GameOver);
             return;
         }
 
@@ -101,6 +137,7 @@ public class Drone : MonoBehaviour
                 ScoreMultiplier = 0,
                 score = 0,
             });
+            SetState(State.GameOver);
             return;
         }
         float dotVector = Vector2.Dot(Vector2.up, transform.up); //Dot product == produto escalar
@@ -116,6 +153,7 @@ public class Drone : MonoBehaviour
                 ScoreMultiplier = 0,
                 score = 0,
             });
+            SetState(State.GameOver);
             return;
         }
         Debug.Log("Pousou corretamente");
@@ -141,6 +179,7 @@ public class Drone : MonoBehaviour
             ScoreMultiplier = platform.GetScoreMultiplier(),
             score = score,
         });
+        SetState(State.GameOver);
     }
     private void OnTriggerEnter2D(Collider2D collision2D)
     {
@@ -160,6 +199,11 @@ public class Drone : MonoBehaviour
             OnCoinPickup?.Invoke(this, EventArgs.Empty);
             coinPickup.DestroyItem();
         }
+    }
+    private void SetState(State state)
+    {
+        this.state = state;
+        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = state });
     }
     private void ConsumeFuel()
     {
