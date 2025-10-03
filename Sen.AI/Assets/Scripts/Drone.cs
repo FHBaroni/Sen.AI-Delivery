@@ -68,9 +68,9 @@ public class Drone : MonoBehaviour
         switch (state)
         {
             case State.WaitingToStart:
-                if (Keyboard.current.upArrowKey.isPressed ||
-                    Keyboard.current.rightArrowKey.isPressed ||
-                    Keyboard.current.leftArrowKey.isPressed)
+                if (GameInput.Instance.IsUpActionPressed() ||
+                    GameInput.Instance.IsLeftActionPressed() ||
+                    GameInput.Instance.IsRightActionPressed())
                 {
                     droneRb.gravityScale = GRAVITY;
                     SetState(State.Playing);
@@ -79,21 +79,21 @@ public class Drone : MonoBehaviour
             case State.Playing:
                 if (fuelAmount <= 0f) return;
 
-                if (Keyboard.current.upArrowKey.isPressed)
+                if (GameInput.Instance.IsUpActionPressed())
                 {
                     float force = 700f;
                     droneRb.AddForce(force * transform.up * Time.deltaTime);
                     ConsumeFuel();
                     OnUpForce?.Invoke(this, EventArgs.Empty);
                 }
-                if (Keyboard.current.rightArrowKey.isPressed)
+                if (GameInput.Instance.IsRightActionPressed())
                 {
                     float turnSpeed = -100f;
                     droneRb.AddTorque(turnSpeed * Time.deltaTime);
                     ConsumeFuel();
                     OnRightForce?.Invoke(this, EventArgs.Empty);
                 }
-                if (Keyboard.current.leftArrowKey.isPressed)
+                if (GameInput.Instance.IsLeftActionPressed())
                 {
                     float turnSpeed = 100f;
                     droneRb.AddTorque(turnSpeed * Time.deltaTime);

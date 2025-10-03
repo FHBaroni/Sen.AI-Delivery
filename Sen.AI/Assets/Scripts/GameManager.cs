@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     private static int levelNumber = 1;
     [SerializeField] private List<GameLevel> gameLevelList;
+    [SerializeField] private CinemachineCamera cinemachineCamera;
     private int score;
     private float time;
     private bool isTimerActive;
@@ -28,6 +30,16 @@ public class GameManager : MonoBehaviour
 
         LoadCurrentLevel();
     }
+    private void Drone_OnStateChanged(object sender, Drone.OnStateChangedEventArgs e)
+    {
+        isTimerActive = e.state == Drone.State.Playing;
+
+        if (e.state == Drone.State.Playing)
+        {
+            cinemachineCamera.Target.TrackingTarget = Drone.Instance.transform;
+            CinemachineZoom2D.Instance.SetNormalOrthographicSize();
+        }
+    }
 
     private void LoadCurrentLevel()
     {
@@ -38,14 +50,12 @@ public class GameManager : MonoBehaviour
             {
                 GameLevel spawnedGameLevel = Instantiate(gameLevel, Vector3.zero, Quaternion.identity);
                 Drone.Instance.transform.position = spawnedGameLevel.GetDroneStartPosition();
+                cinemachineCamera.Target.TrackingTarget = spawnedGameLevel.GetCameraStartTargetTransform();
+                CinemachineZoom2D.Instance.SetTargetOrthographicSize(spawnedGameLevel.GetZoomedOutOrthographicSize());
             }
         }
     }
 
-    private void Drone_OnStateChanged(object sender, Drone.OnStateChangedEventArgs e)
-    {
-        isTimerActive = e.state == Drone.State.Playing;
-    }
 
     private void Update()
     {
