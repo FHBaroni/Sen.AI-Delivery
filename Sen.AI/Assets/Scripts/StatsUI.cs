@@ -23,6 +23,7 @@ public class StatsUI : MonoBehaviour
 
         fuelImage.fillAmount = Drone.Instance.GetFuelNormalized();
         statsTextMesh.text =
+            GameManager.Instance.GetCurrentLevelNumber() + "\n" +
             GameManager.Instance.GetScore() + "\n" +
             Mathf.Round(GameManager.Instance.GetTime()) + "\n" +
             Mathf.Abs(Mathf.Round(Drone.Instance.GetSpeedX() * 10f)) + "\n" +

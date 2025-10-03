@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    private static int levelNumber = 1;
+    [SerializeField] private List<GameLevel> gameLevelList;
     private int score;
     private float time;
     private bool isTimerActive;
@@ -20,6 +25,21 @@ public class GameManager : MonoBehaviour
         Drone.Instance.OnCoinPickup += Drone_OnCoinPickup;
         Drone.Instance.OnLanded += Drone_OnLanded;
         Drone.Instance.OnStateChanged += Drone_OnStateChanged;
+
+        LoadCurrentLevel();
+    }
+
+    private void LoadCurrentLevel()
+    {
+        foreach (GameLevel gameLevel in gameLevelList)
+        {
+            gameLevel.gameObject.SetActive(gameLevel.GetLevelNumber() == levelNumber);
+            if (gameLevel.GetLevelNumber() == levelNumber)
+            {
+                GameLevel spawnedGameLevel = Instantiate(gameLevel, Vector3.zero, Quaternion.identity);
+                Drone.Instance.transform.position = spawnedGameLevel.GetDroneStartPosition();
+            }
+        }
     }
 
     private void Drone_OnStateChanged(object sender, Drone.OnStateChangedEventArgs e)
@@ -58,5 +78,19 @@ public class GameManager : MonoBehaviour
     public float GetTime()
     {
         return time;
+    }
+    public void GoToNextLevel()
+    {
+        levelNumber++;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+    }
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public int GetCurrentLevelNumber()
+    {
+        return levelNumber;
     }
 }
