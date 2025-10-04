@@ -28,7 +28,6 @@ public class StatsUI : MonoBehaviour
             Mathf.Round(GameManager.Instance.GetTime()) + "\n" +
             Mathf.Abs(Mathf.Round(Drone.Instance.GetSpeedX() * 10f)) + "\n" +
             Mathf.Abs(Mathf.Round(Drone.Instance.GetSpeedY() * 10));
-
     }
 
 }

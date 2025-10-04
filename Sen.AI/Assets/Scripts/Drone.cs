@@ -13,6 +13,7 @@ public class Drone : MonoBehaviour
     public event EventHandler OnLeftForce;
     public event EventHandler OnNoForce;
     public event EventHandler OnCoinPickup;
+    public event EventHandler OnEnergyPickup;
 
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
     public class OnStateChangedEventArgs : EventArgs
@@ -192,6 +193,7 @@ public class Drone : MonoBehaviour
                 fuelAmount = fuelAmountMax;
             }
             energyPickup.DestroyItem();
+            OnEnergyPickup?.Invoke(this, EventArgs.Empty);
         }
 
         if (collision2D.gameObject.TryGetComponent(out CoinPickup coinPickup))

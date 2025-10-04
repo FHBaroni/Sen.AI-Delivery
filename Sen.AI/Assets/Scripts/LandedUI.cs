@@ -47,13 +47,14 @@ public class LandedUI : MonoBehaviour
             MathF.Round(e.LandingSpeed * 2f) + "\n" +
             MathF.Round(e.dotVector * 100f) + "\n" +
             "x" + e.ScoreMultiplier + "\n" +
-            e.score;
+            GameManager.Instance.GetScore();
 
         Show();
     }
     private void Show()
     {
         gameObject.SetActive(true);
+        nextButton.Select();
     }
     private void Hide()
     {

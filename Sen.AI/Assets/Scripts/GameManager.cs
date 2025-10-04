@@ -11,6 +11,12 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     private static int levelNumber = 1;
+    private static int totalScore = 0;
+    public static void ResetStaticData()
+    {
+        levelNumber = 1;
+        totalScore = 0;
+    }
 
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnpaused;
@@ -53,17 +59,23 @@ public class GameManager : MonoBehaviour
 
     private void LoadCurrentLevel()
     {
+        GameLevel gameLevel = GetGameLevel();
+        GameLevel spawnedGameLevel = Instantiate(gameLevel, Vector3.zero, Quaternion.identity);
+        Drone.Instance.transform.position = spawnedGameLevel.GetDroneStartPosition();
+        cinemachineCamera.Target.TrackingTarget = spawnedGameLevel.GetCameraStartTargetTransform();
+        CinemachineZoom2D.Instance.SetTargetOrthographicSize(spawnedGameLevel.GetZoomedOutOrthographicSize());
+    }
+
+    private GameLevel GetGameLevel()
+    {
         foreach (GameLevel gameLevel in gameLevelList)
         {
-            gameLevel.gameObject.SetActive(gameLevel.GetLevelNumber() == levelNumber);
             if (gameLevel.GetLevelNumber() == levelNumber)
             {
-                GameLevel spawnedGameLevel = Instantiate(gameLevel, Vector3.zero, Quaternion.identity);
-                Drone.Instance.transform.position = spawnedGameLevel.GetDroneStartPosition();
-                cinemachineCamera.Target.TrackingTarget = spawnedGameLevel.GetCameraStartTargetTransform();
-                CinemachineZoom2D.Instance.SetTargetOrthographicSize(spawnedGameLevel.GetZoomedOutOrthographicSize());
+                return gameLevel;
             }
         }
+        return null;
     }
 
 
@@ -82,7 +94,7 @@ public class GameManager : MonoBehaviour
     private void Drone_OnCoinPickup(object sender, EventArgs e)
     {
         AddScore(500);
-        Debug.Log("Score: " + score);
+
     }
 
     public void AddScore(int scoreAmount)
@@ -99,10 +111,24 @@ public class GameManager : MonoBehaviour
     {
         return time;
     }
+    public float GetTotalScore()
+    {
+        return totalScore;
+    }
     public void GoToNextLevel()
     {
+
         levelNumber++;
-        SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
+        totalScore += score;
+
+        if (GetGameLevel() == null)
+        {
+            SceneLoader.LoadScene(SceneLoader.Scene.GameOverScene);
+        }
+        else
+        {
+            SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
+        }
 
     }
     public void RestartLevel()

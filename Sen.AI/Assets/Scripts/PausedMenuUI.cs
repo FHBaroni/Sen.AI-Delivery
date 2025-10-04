@@ -5,12 +5,17 @@ using UnityEngine.UI;
 public class PausedMenuUI : MonoBehaviour
 {
     [SerializeField] private Button resumeButton;
+    [SerializeField] private Button MainMenuButton;
 
     private void Awake()
     {
         resumeButton.onClick.AddListener(() =>
         {
             GameManager.Instance.UnpauseGame();
+        });
+        MainMenuButton.onClick.AddListener(() =>
+        {
+            SceneLoader.LoadScene(SceneLoader.Scene.MainMenuScene);
         });
     }
     private void Start()
@@ -36,6 +41,7 @@ public class PausedMenuUI : MonoBehaviour
     }
     private void Show()
     {
+        resumeButton.Select();
         gameObject.SetActive(true);
     }
 }
