@@ -8,6 +8,8 @@ public class Drone : MonoBehaviour
 
     private const float GRAVITY = 0.7f;
     public static Drone Instance { get; private set; }
+    public int OnBeforeForce { get; internal set; }
+
     public event EventHandler OnUpForce;
     public event EventHandler OnRightForce;
     public event EventHandler OnLeftForce;
