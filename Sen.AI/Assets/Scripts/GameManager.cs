@@ -92,12 +92,12 @@ public class GameManager : MonoBehaviour
     public void GoToNextLevel()
     {
         levelNumber++;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
 
     }
     public void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
     }
     public int GetCurrentLevelNumber()
     {
