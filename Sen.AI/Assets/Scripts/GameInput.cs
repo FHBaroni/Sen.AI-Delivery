@@ -1,8 +1,12 @@
+using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
     public static GameInput Instance { get; private set; }
+    public event EventHandler OnMenuButtonPresed;
 
     private InputActions inputActions;
 
@@ -12,7 +16,15 @@ public class GameInput : MonoBehaviour
 
         inputActions = new InputActions();
         inputActions.Enable();
+
+        inputActions.Player.MenuAction.performed += MenuAction_performed;
     }
+
+    private void MenuAction_performed(InputAction.CallbackContext obj)
+    {
+        OnMenuButtonPresed?.Invoke(this, EventArgs.Empty);
+    }
+
     public bool IsUpActionPressed()
     {
         return inputActions.Player.DroneUp.IsPressed();

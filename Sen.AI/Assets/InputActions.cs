@@ -117,6 +117,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MenuAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""52cbbdb4-ec97-441a-bf29-c05ccfac4c5a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -251,6 +260,17 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""DroneRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1c008479-eea0-4a40-9b3c-cb9b7d116a0a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MenuAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -262,6 +282,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player_DroneUp = m_Player.FindAction("DroneUp", throwIfNotFound: true);
         m_Player_DroneLeft = m_Player.FindAction("DroneLeft", throwIfNotFound: true);
         m_Player_DroneRight = m_Player.FindAction("DroneRight", throwIfNotFound: true);
+        m_Player_MenuAction = m_Player.FindAction("MenuAction", throwIfNotFound: true);
     }
 
     ~@InputActions()
@@ -345,6 +366,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_DroneUp;
     private readonly InputAction m_Player_DroneLeft;
     private readonly InputAction m_Player_DroneRight;
+    private readonly InputAction m_Player_MenuAction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -368,6 +390,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/DroneRight".
         /// </summary>
         public InputAction @DroneRight => m_Wrapper.m_Player_DroneRight;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/MenuAction".
+        /// </summary>
+        public InputAction @MenuAction => m_Wrapper.m_Player_MenuAction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -403,6 +429,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @DroneRight.started += instance.OnDroneRight;
             @DroneRight.performed += instance.OnDroneRight;
             @DroneRight.canceled += instance.OnDroneRight;
+            @MenuAction.started += instance.OnMenuAction;
+            @MenuAction.performed += instance.OnMenuAction;
+            @MenuAction.canceled += instance.OnMenuAction;
         }
 
         /// <summary>
@@ -423,6 +452,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @DroneRight.started -= instance.OnDroneRight;
             @DroneRight.performed -= instance.OnDroneRight;
             @DroneRight.canceled -= instance.OnDroneRight;
+            @MenuAction.started -= instance.OnMenuAction;
+            @MenuAction.performed -= instance.OnMenuAction;
+            @MenuAction.canceled -= instance.OnMenuAction;
         }
 
         /// <summary>
@@ -484,5 +516,12 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDroneRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MenuAction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMenuAction(InputAction.CallbackContext context);
     }
 }

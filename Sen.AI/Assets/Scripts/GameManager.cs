@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     private static int levelNumber = 1;
+
+    public event EventHandler OnGamePaused;
+    public event EventHandler OnGameUnpaused;
     [SerializeField] private List<GameLevel> gameLevelList;
     [SerializeField] private CinemachineCamera cinemachineCamera;
     private int score;
@@ -28,8 +31,15 @@ public class GameManager : MonoBehaviour
         Drone.Instance.OnLanded += Drone_OnLanded;
         Drone.Instance.OnStateChanged += Drone_OnStateChanged;
 
+        GameInput.Instance.OnMenuButtonPresed += GameInput_OnMenuButtonPresed;
         LoadCurrentLevel();
     }
+
+    private void GameInput_OnMenuButtonPresed(object sender, EventArgs e)
+    {
+        PauseUnpauseGame();
+    }
+
     private void Drone_OnStateChanged(object sender, Drone.OnStateChangedEventArgs e)
     {
         isTimerActive = e.state == Drone.State.Playing;
@@ -103,4 +113,26 @@ public class GameManager : MonoBehaviour
     {
         return levelNumber;
     }
+    private void PauseUnpauseGame()
+    {
+        if (Time.timeScale == 0f)
+        {
+            UnpauseGame();
+        }
+        else
+        {
+            PauseGame();
+        }
+    }
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+        OnGamePaused?.Invoke(this, EventArgs.Empty);
+    }
+    public void UnpauseGame()
+    {
+        Time.timeScale = 1f;
+        OnGameUnpaused?.Invoke(this, EventArgs.Empty);
+    }
+
 }
