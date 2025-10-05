@@ -18,8 +18,14 @@ public class DroneAudio : MonoBehaviour
         drone.OnUpForce += Drone_OnUpForce;
         drone.OnLeftForce += Drone_OnLeftForce;
         drone.OnRightForce += Drone_OnRightForce;
+        SoundManager.Instance.OnSoundVolumeCanged += SoundManager_OnSoundVolumeCanged;
         engineAudioSource.Pause();
 
+    }
+
+    private void SoundManager_OnSoundVolumeCanged(object sender, EventArgs e)
+    {
+        engineAudioSource.volume = SoundManager.Instance.GetSoundVolumeNormalized();
     }
 
     private void Drone_OnRightForce(object sender, EventArgs e)
