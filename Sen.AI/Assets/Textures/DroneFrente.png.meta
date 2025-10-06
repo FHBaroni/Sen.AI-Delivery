@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f020e42a7e458ff48b20a77150a88ee0
+guid: 6ff612e180fcd7842b4ddab9c38d2d18
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6510388345836842377
-    second: Lander_0
+      213: 4980783768779761285
+    second: DroneFrente_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 187.5
+  spritePixelsToUnits: 150
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -97,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WindowsStoreApps
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Lander_0
+      name: DroneFrente_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 4
-        width: 236
-        height: 364
+        x: 21
+        y: 222
+        width: 375
+        height: 173
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7725d800b4476a5a0800000000000000
-      internalID: -6510388345836842377
+      spriteID: 5862629c27c4f1540800000000000000
+      internalID: 4980783768779761285
       vertices: []
       indices: 
       edges: []
@@ -148,9 +148,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Lander_0: -6510388345836842377
+      DroneFrente_0: 4980783768779761285
   mipmapLimitGroupName: 
-  pSDRemoveMatte: 1
+  pSDRemoveMatte: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

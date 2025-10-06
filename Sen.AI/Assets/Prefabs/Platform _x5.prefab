@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: scoreMultiplier
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3064038223641599095, guid: 67b85bc8773ff7d43b1e71a62d23c74d, type: 3}
+      propertyPath: m_Size.y
+      value: 1.5066985
+      objectReference: {fileID: 0}
+    - target: {fileID: 3064038223641599095, guid: 67b85bc8773ff7d43b1e71a62d23c74d, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.22567278
+      objectReference: {fileID: 0}
     - target: {fileID: 3508930665344608858, guid: 67b85bc8773ff7d43b1e71a62d23c74d, type: 3}
       propertyPath: m_Name
       value: Platform _x5

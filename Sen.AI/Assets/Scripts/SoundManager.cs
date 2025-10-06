@@ -7,6 +7,7 @@ public class SoundManager : MonoBehaviour
 
     public static SoundManager Instance { get; private set; }
     private static int soundVolume = 6;
+    private AudioSource soundAudioSource;
 
     public event EventHandler OnSoundVolumeCanged;
 
@@ -24,6 +25,7 @@ public class SoundManager : MonoBehaviour
         Drone.Instance.OnEnergyPickup += Drone_OnEnergyPickup;
         Drone.Instance.OnCoinPickup += Drone_OnCoinPickup;
         Drone.Instance.OnLanded += Drone_OnLanded;
+
     }
 
     private void Drone_OnLanded(object sender, Drone.OnLandedEventArgs e)
@@ -51,6 +53,7 @@ public class SoundManager : MonoBehaviour
     public void ChangeSoundVolume()
     {
         soundVolume = (soundVolume + 1) % SOUND_VOLUME_MAX;
+        OnSoundVolumeCanged?.Invoke(this, EventArgs.Empty);
     }
 
     public int GetSoundVolume()
