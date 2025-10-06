@@ -424,7 +424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 099ff2da2e2f23143ba9a15edb36e6e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelNumber: 1
+  levelNumber: 3
   droneStartPositionTransform: {fileID: 4879915916547072861}
   cameraStartTargetTransform: {fileID: 8952819838051631662}
   zoomedOutOrthographicSize: 12
